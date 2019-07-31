@@ -1,0 +1,108 @@
+
+Singleton design pattern:  share same object across all class of the application.
+
+          Singleton we are gonna to do driver object, Why do we need a driver soon we are gonna a ot of code,
+       but I still work same driver object because I will have one driver object at the time. One browser
+     it means to be represented bu same object.
+
+
+public class Driver {
+
+      private static WebDriver driver;
+
+      public static WebDriver getDriver(){
+          if(driver==null){
+              WebDriverManager.chromedriver().setup();
+              driver=new ChromeDriver();
+          }
+          return driver;
+      }
+
+      we have a class with static variable, and a getter method
+      how the getter works:
+            1. it checks of driver object has value / initialized or not
+            2. if driver is not initialized it will be initialized inside the if class
+            3. it will return the driver object
+            4. if the driver is already initialized, it will skip the if part and simple return the same driver
+
+    To our Driver class we add a private constructor so that so one can make an object of this class. Whoever needs to use the driver
+    object has to call the getDriver() method.
+
+    Go to the TestBase change
+                driver = new ChromeDriver();
+
+                 to
+
+                  driver = Driver.getDriver();
+
+
+    driver.qiute(); close all the open windows, but does not make the object null,
+    we need to make the object null using the folloeing code:
+
+        public static void closeDriver(){
+                  if(driver!=null){
+                      driver.quit();
+                      driver=null;
+                  }
+        }
+
+        If we quite the webdriver without making the object null and try to use it again,
+                we get webdriver exception.
+
+    --------------------
+
+    Page Object model:
+
+    Selenium is not good for creating locating object compared to other tools and also
+    creating object repositories.
+
+    We need to manually write locators. When we use same object multiple times, we may have to use the same
+    xpath for that object multiple times. if we ever want to change that xpath or other locators, we have to find every
+    instance where that xpath was used and chabge it.
+
+    To address these we use a design pattern called Page Object Model.
+    In page object model we create a copy of each page separately and use that object when
+           we needs elements from that page.
+
+
+  In page object model, we have a separate class for each page of the application
+   which mirror the elements and behavior of that page
+
+   All object classes must have a following constructor.
+
+   public HomePage(){
+           PageFactory.initElements(Driver.getDriver(), this);
+       }
+---------------
+ @FindBy(id="ctl00_MainContent_username")
+    public WebElement username;
+
+ @FindBy--->  annotation from selenium, we provide the type and the value of the locator to it
+
+
+
+Each package has classes with single purpose.
+
+Benefits:
+     page object classes are easily reusable
+     easy to maintains(locators are saved only in one place)
+     easy to understand
+
+
+
+
+In page Object classes we can put behaviour of the page as well.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
